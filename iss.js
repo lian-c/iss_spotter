@@ -25,5 +25,34 @@ const fetchMyIP = function(callback) {
     
   });
 };
+const fetchMyIPTest = function() {
+  // use request to fetch IP address from JSON API
+  request('https://api.ipify.org/?format=json', (error, response, body) => {
+    if (error) {
+      return error;
+    }
+    if (response.statusCode !== 200) {
+      const msg = `Status Code ${response.statusCode} when fetching IP. Response: ${body}`;
+      return Error(msg);
+    }
+   
+    const nonstring = JSON.parse(body); //give the object
+    const result = nonstring.ip; // takes just the ip key to return the value as a string
+    return (result); //remember to use null as it takes two parameters
+    
+  });
+};
 
-module.exports = { fetchMyIP };
+const fetchCoordsByIP = function(ip) {
+
+request(`http://ipwho.is/${ip}`, (error, response,body) => {
+  const {latitude, longitude} = JSON.parse(body) 
+  const result = {latitude, longitude}
+  console.log(result)
+})
+  
+};
+
+fetchCoordsByIP("50.98.71.238")
+fetchCoordsByIP(fetchMyIPTest())
+module.exports = { fetchMyIP, fetchCoordsByIP };
