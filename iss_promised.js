@@ -16,12 +16,29 @@ const fetchCoordsByIP = function(body) {
   return request(`http://ipwho.is/${ip}`);
 };
 
+/*
+ * Requests data from https://iss-flyover.herokuapp.com using provided lat/long data
+ * Input: JSON body containing geo data response from ipwho.is
+ * Returns: Promise of request for fly over data, returned as JSON string
+ */
+
 const fetchISSFlyOverTimes = function(coords) {
   const object = JSON.parse(coords);
-  return request(`https://iss-flyover.herokuapp.com/json/?lat=${object.latitude}&lon=${object.longitude}`)
+  return request(`https://iss-flyover.herokuapp.com/json/?lat=${object.latitude}&lon=${object.longitude}`);
+};
+/*
+ * Input: None
+ * Returns: Promise for fly over data for users location
+ */
+
+const nextISSTimesForMyLocation = function() {
+  return fetchMyIP()
+    .then(fetchCoordsByIP) // so we don't need the () to call function
+    .then(fetchISSFlyOverTimes)
+    .then((body) => {
+      const timeObj = JSON.parse(body).response; // to get risetime and duration
+      return timeObj;
+    });
 };
 
-const nextISSTimesForMyLocation = function(){
-  
-}
-module.exports = { fetchMyIP , fetchCoordsByIP, fetchISSFlyOverTimes };
+module.exports = { fetchMyIP , fetchCoordsByIP, fetchISSFlyOverTimes, nextISSTimesForMyLocation };

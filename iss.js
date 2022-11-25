@@ -111,7 +111,12 @@ const nextISSTimesForMyLocation = function(callback) {
   
 };
 
+const times = function (array){
+  array.forEach(element => {
+  const date = Date(element.risetime); // oo https://www.w3schools.com/js/js_dates.asp
+  console.log(`Next pass at ${date} for ${element.duration} seconds!`);
+});
+}
 
-
-module.exports = { nextISSTimesForMyLocation };
+module.exports = { nextISSTimesForMyLocation , times };
 

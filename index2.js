@@ -1,6 +1,10 @@
-const { fetchMyIP, fetchCoordsByIP, fetchISSFlyOverTimes } = require("./iss_promised");
+const { nextISSTimesForMyLocation } = require("./iss_promised");
+const {times} = require("./iss");
 
-fetchMyIP()
-  .then(fetchCoordsByIP) // so we don't need the () to call function
-  .then(fetchISSFlyOverTimes)
-  .then(body => console.log(body)); //originally just put console.log() and it worked but updated it
+nextISSTimesForMyLocation()
+  .then((timeObj) => {
+    times(timeObj);
+  })
+  .catch((error) => {
+    console.log("It didn't work: ", error.message);
+  });

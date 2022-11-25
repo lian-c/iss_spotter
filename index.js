@@ -1,15 +1,12 @@
 // index.js
-const { nextISSTimesForMyLocation } = require('./iss');
+const { nextISSTimesForMyLocation, times } = require('./iss');
 
 nextISSTimesForMyLocation((error, passTimes) => {
   if (error) {
     return console.log("It didn't work!", error);
   }
   // success, print out the deets!
-  passTimes.forEach(element => {
-    const date = Date(element.risetime); // oo https://www.w3schools.com/js/js_dates.asp
-    console.log(`Next pass at ${date} for ${element.duration} seconds!`);
-  });
+  times(passTimes)
   
 });
 
