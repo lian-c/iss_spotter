@@ -11,48 +11,43 @@ const fetchMyIP = function(callback) {
   // use request to fetch IP address from JSON API
   request('https://api.ipify.org/?format=json', (error, response, body) => {
     if (error) {
-      return callback(error,null);
+      return callback(error, null);
     }
     if (response.statusCode !== 200) {
       const msg = `Status Code ${response.statusCode} when fetching IP. Response: ${body}`;
       callback(Error(msg), null);
       return;
     }
-   
+
     const nonstring = JSON.parse(body); //give the object
     const result = nonstring.ip; // takes just the ip key to return the value as a string
     return callback(null, result); //remember to use null as it takes two parameters
-    
+
   });
 };
-const fetchMyIPTest = function() {
-  // use request to fetch IP address from JSON API
-  request('https://api.ipify.org/?format=json', (error, response, body) => {
+
+
+const fetchCoordsByIP = function(ip, callback) {
+
+  request(`http://ipwho.is/${ip}`, (error, response, body) => {
     if (error) {
-      return error;
+      callback(error, null);
+      return;
     }
-    if (response.statusCode !== 200) {
-      const msg = `Status Code ${response.statusCode} when fetching IP. Response: ${body}`;
-      return Error(msg);
+    const object = JSON.parse(body);
+
+    if (object.success === false) {
+      const msg = `Unsuccessful, message: ${object.message} with IP ${object.ip}, please check the IP address or try again`;
+      callback(Error(msg), null);
+      return;
     }
-   
-    const nonstring = JSON.parse(body); //give the object
-    const result = nonstring.ip; // takes just the ip key to return the value as a string
-    return (result); //remember to use null as it takes two parameters
-    
+    const { latitude, longitude } = object; //grabs only lat and long within the object but are separated variables
+    const result = { latitude, longitude }; //allows us to put it back into an object
+    return callback(null, result);
   });
+
 };
 
-const fetchCoordsByIP = function(ip) {
 
-request(`http://ipwho.is/${ip}`, (error, response,body) => {
-  const {latitude, longitude} = JSON.parse(body) 
-  const result = {latitude, longitude}
-  console.log(result)
-})
-  
-};
 
-fetchCoordsByIP("50.98.71.238")
-fetchCoordsByIP(fetchMyIPTest())
 module.exports = { fetchMyIP, fetchCoordsByIP };
